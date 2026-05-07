@@ -1,10 +1,12 @@
-from doro_reader import Doro_reader
+from fastapi import FastAPI
+from apps.doro.app.doro_reader import Doro_reader
+
+app = FastAPI(title="Doro (Director)")
 
 class Doro_diretor:
     def __init__(self):
         pass
 
-if __name__ == "__main__":
-    print("한국도로공사데이터")
-    d = Doro_reader()
-    d.get_data()
+    def get_data(self):
+        d = Doro_reader()
+        return d.get_data()
