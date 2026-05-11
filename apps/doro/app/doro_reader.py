@@ -7,7 +7,7 @@ _DATA_DIR = Path(__file__).resolve().parent
 _CSV_PATH = _DATA_DIR / "한국도로공사_교통사고통계_20241231.csv"
 
 
-class Doro_reader:
+class DoroReader:
     def __init__(self) :
         pass
 
