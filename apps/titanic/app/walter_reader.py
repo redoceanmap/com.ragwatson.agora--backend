@@ -10,8 +10,9 @@ class WalterReader:
     def __init__(self):
         self.df = pd.read_csv(_CSV_PATH)
 
-    def get_data(self):
-        return self.df.iloc[[0]].astype(object).where(self.df.iloc[[0]].notna(), None)
+    def get_data(self) -> pd.DataFrame:
+        df_slice = self.df.iloc[[0]]
+        return pd.DataFrame(df_slice.astype(object).where(df_slice.notna(), None))
 
     def get_count(self):
         return len(self.df)

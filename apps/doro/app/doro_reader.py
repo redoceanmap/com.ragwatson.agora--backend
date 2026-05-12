@@ -11,6 +11,7 @@ class DoroReader:
     def __init__(self) :
         pass
 
-    def get_data(self) :
+    def get_data(self) -> pd.DataFrame:
         df = pd.read_csv(_CSV_PATH, encoding="cp949")
-        return df.iloc[[1]].astype(object).where(df.iloc[[1]].notna(), None)
+        df_slice = df.iloc[[1]]
+        return pd.DataFrame(df_slice.astype(object).where(df_slice.notna(), None))

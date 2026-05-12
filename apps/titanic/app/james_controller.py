@@ -1,4 +1,4 @@
-from titanic.app.jack_service import JackService
+from .jack_service import JackService
 
 
 class JamesController:
@@ -15,7 +15,7 @@ class JamesController:
         return self.jack.get_accuracy()
 
     def get_data(self):
-        return self.jack.get_data()
+        return self.jack.get_data().to_dict(orient="records")
 
     def get_count(self):
         return self.jack.get_count()

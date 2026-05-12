@@ -3,12 +3,8 @@ import json
 
 app = FastAPI(title="Redoceanmap Main Page")
 
-try:
-    from titanic.app.james_controller import JamesController
-    from doro.app.doro_director import DoroDiretor
-except ModuleNotFoundError:
-    from apps.titanic.app.james_controller import JamesController
-    from apps.doro.app.doro_director import DoroDiretor
+from titanic.app.james_controller import JamesController
+from doro.app.doro_director import DoroDiretor
 
 
 @app.get("/")
@@ -20,9 +16,7 @@ def read_root():
 @app.get("/titanic/data")
 def read_titanic_data():
     james = JamesController()
-    df = james.get_data()
-    
-    return df.to_dict(orient="records")
+    return james.get_data()
 
 
 @app.get("/titanic/count")

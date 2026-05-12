@@ -28,7 +28,7 @@ class RoseModel:
 
     def get_accuracy(self) -> float:
         y_pred = self.model.predict(self._X_test)
-        return round(accuracy_score(self._y_test, y_pred), 4)
+        return float(round(accuracy_score(self._y_test, y_pred), 4))
 
     def get_tree(self) -> str:
         return export_text(self.model, feature_names=self._X_train.columns.tolist())

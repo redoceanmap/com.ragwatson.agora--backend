@@ -1,5 +1,5 @@
-from titanic.app.walter_reader import WalterReader
-from titanic.app.rose_model import RoseModel
+from .walter_reader import WalterReader
+from .rose_model import RoseModel
 
 class JackService:
     def __init__(self):
