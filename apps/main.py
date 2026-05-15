@@ -1,11 +1,29 @@
+import os
+from pathlib import Path
+from dotenv import load_dotenv
+import httpx
+
 from fastapi import Depends, FastAPI, Response
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 import json
-
+from pydantic import BaseModel
 from database import get_db
+from matrix.app.keymaker import get_keymaker
 
-app = FastAPI(title="RagWatson Agora Main Page")
+load_dotenv(Path(__file__).parents[1] / ".env")
+
+app = FastAPI(title="Main page")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000", "http://localhost:3001"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+keymaker = get_keymaker()
 
 from titanic.app.james_controller import JamesController
 from doro.app.doro_director import DoroDiretor
@@ -16,6 +34,45 @@ def read_root():
     content = {"message": "FAST API 메인 페이지", "docs": "/docs"}
     json_str = json.dumps(content, ensure_ascii=False, indent=4)
     return Response(content=json_str.encode("utf-8"), media_type="application/json; charset=utf-8")
+
+class ChatRequest(BaseModel):
+    message: str
+
+
+@app.post("/chat")
+async def chat(req: ChatRequest):
+    if keymaker.gemini is None:
+        return {"error": "Gemini API key가 설정되지 않았습니다."}
+    try:
+        response = keymaker.gemini.generate_content(req.message)
+        return {"reply": response.text}
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@app.get("/weather")
+async def get_weather(lat: float, lon: float):
+    api_key = os.getenv("OPENWEATHER_API_KEY", "")
+    if not api_key:
+        return {"error": "OpenWeather API key가 설정되지 않았습니다."}
+    try:
+        async with httpx.AsyncClient() as client:
+            res = await client.get(
+                "https://api.openweathermap.org/data/2.5/weather",
+                params={"lat": lat, "lon": lon, "appid": api_key, "units": "metric", "lang": "kr"},
+            )
+            data = res.json()
+        return {
+            "city": data["name"],
+            "temp": data["main"]["temp"],
+            "feels_like": data["main"]["feels_like"],
+            "description": data["weather"][0]["description"],
+            "icon": data["weather"][0]["icon"],
+            "humidity": data["main"]["humidity"],
+        }
+    except Exception as e:
+        return {"error": str(e)}
+
 
 @app.get("/titanic/data")
 def read_titanic_data():

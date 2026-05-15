@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.orm import DeclarativeBase
 
-load_dotenv(Path(__file__).parents[4] / ".env")
+load_dotenv(Path(__file__).parents[1] / ".env")
 
 DATABASE_URL = os.environ["DATABASE_URL"].replace(
     "postgresql://", "postgresql+psycopg://"
