@@ -4,7 +4,7 @@ import os
 from pathlib import Path
 
 from dotenv import load_dotenv
-import google.generativeai as genai
+from google import genai
 
 load_dotenv(Path(__file__).resolve().parents[3] / ".env")
 
@@ -15,10 +15,9 @@ class Keymaker:
     def __init__(self):
         api_key = (os.getenv("GEMINI_API_KEY") or "").strip()
         if api_key:
-            genai.configure(api_key=api_key)
-            self.gemini: genai.GenerativeModel | None = genai.GenerativeModel(GEMINI_MODEL)
+            self.client: genai.Client | None = genai.Client(api_key=api_key)
         else:
-            self.gemini = None
+            self.client = None
 
 
 _keymaker: Keymaker | None = None
